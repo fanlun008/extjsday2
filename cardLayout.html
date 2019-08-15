@@ -1,0 +1,279 @@
+<html>
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>cardlayout</title>
+  <link rel="stylesheet" type="text/css" href="./resources/css/ext-all.css" />
+  <script type="text/javascript" src="./adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="./ext-all.js"></script>
+  <script type="text/javascript">
+    Ext.onReady(function () {
+
+      var navHandler = function (direction) {
+        var wizard = Ext.getCmp('wizard').layout;
+        var prev = Ext.getCmp('move-prev');
+        var next = Ext.getCmp('move-next');
+        var activeId = wizard.activeItem.id;
+
+        if (activeId == 'card-0') {
+          if (direction == 1) {
+            wizard.setActiveItem(1);
+            prev.setDisabled(false);
+          }
+        } else if (activeId == 'card-1') {
+          if (direction == -1) {
+            wizard.setActiveItem(0);
+            prev.setDisabled(true);
+          } else {
+            wizard.setActiveItem(2);
+            next.setDisabled(true);
+          }
+        } else if (activeId == 'card-2') {
+          if (direction == -1) {
+            wizard.setActiveItem(1);
+            next.setDisabled(false);
+          }
+        }
+      }
+
+
+      var viewport = new Ext.Viewport({
+        layout: 'border',
+        items: [{
+          region: 'west',
+          id: 'wizard',
+          width: 500,
+          title: '问卷调查',
+          layout: 'card',
+          activeItem: 0,
+          bodyStyle: 'padding:15px',
+          defaults: {
+            border: false
+          },
+          bbar: [{
+            id: 'move-prev',
+            text: '上一步',
+            handler: navHandler.createDelegate(this, [-1]),
+            disabled: true
+          }, '->', {
+            id: 'move-next',
+            text: '下一步',
+            handler: navHandler.createDelegate(this, [1])
+          }],
+          items: [{
+            id: 'card-0',
+            xtype: 'container',
+            items: [{
+              xtype: 'form',
+              id: 'panel-q1',
+              title: 'Q1 番茄酱属于以下哪种垃圾',
+              defaultType: 'radio',
+              hideLabels: true,
+              items: [{
+                xtype: 'radiogroup',
+                id: 'q1',
+                name: 'q1',
+                title: '',
+                columns: 1,
+                items: [{
+                    boxLabel: '湿垃圾',
+                    name: 'rd1',
+                    inputValue: '1'
+                  },
+                  {
+                    boxLabel: '干垃圾',
+                    name: 'rd1',
+                    inputValue: '2'
+                  },
+                  {
+                    boxLabel: '有害垃圾',
+                    name: 'rd1',
+                    inputValue: '3'
+                  },
+                  {
+                    boxLabel: '可回收垃圾',
+                    name: 'rd1',
+                    inputValue: '4'
+                  }
+                ],
+                listeners: {
+                  'change': function (cmp, checked) {
+                    Ext.getCmp('card3_q1_answer').setValue(checked.inputValue);
+                    console.log(cmp)
+                    console.log(checked);
+
+                  }
+                }
+              }],
+            }]
+          }, {
+            id: 'card-1',
+            xtype: 'container',
+            items: [{
+              xtype: 'form',
+              id: 'panel-q50',
+              title: 'Q50 正确处理狗shi的方法',
+
+              hideLabels: true,
+              items: [{
+                xtype: 'checkboxgroup',
+                id: 'q50',
+                name: 'q50',
+                columns: 1,
+                items: [{
+                    boxLabel: '把耙耙用废报纸包好带回家冲掉',
+                    name: 'cb1',
+                    inputValue: '1'
+                  },
+                  {
+                    boxLabel: '受污染的报纸按有害垃圾处理',
+                    name: 'cb2',
+                    inputValue: '2'
+                  },
+                  {
+                    boxLabel: '没受污染的报纸按可回收垃圾处理',
+                    name: 'cb3',
+                    inputValue: '3'
+                  },
+                  {
+                    boxLabel: '受污染的报纸浸水后当湿垃圾处理',
+                    name: 'cb4',
+                    inputValue: '4'
+                  }
+                ],
+                listeners: {
+                  'change': function (cmp, checkedboxs) {
+                    var card3 = Ext.getCmp('card3_q50_answer')
+                    for (item of cmp.items.items) {
+                      card3.setValue(item.name, item.checked)
+                    }
+                    console.log(cmp)
+                    console.log(checkedboxs)
+                  }
+                }
+              }],
+
+
+            }]
+          }, {
+            id: 'card-2',
+            xtype: 'form',
+
+            layout: {
+              type: 'vbox',
+            },
+            items: [{
+                xtype: 'tbtext',
+                html: '<h1>你的答案</h1><br/><p><b>Q1：番茄属于以下哪种垃圾(单选)</b></p>',
+                width: 400,
+              },
+              {
+                id: 'card3_q1_answer',
+                xtype: 'radiogroup',
+                name: 'card3_q1',
+                columns: 1,
+                items: [{
+                    boxLabel: '湿垃圾',
+                    name: 'rd2',
+                    inputValue: '1'
+                  },
+                  {
+                    boxLabel: '干垃圾',
+                    name: 'rd2',
+                    inputValue: '2'
+                  },
+                  {
+                    boxLabel: '有害垃圾',
+                    name: 'rd2',
+                    inputValue: '3'
+                  },
+                  {
+                    boxLabel: '可回收垃圾',
+                    name: 'rd2',
+                    inputValue: '4'
+                  }
+                ]
+              },
+              {
+                xtype: 'tbtext',
+                html: '<br/><p><b>Q50: 正确处理狗shi的方法</b></p>',
+                width: 400,
+              },
+              {
+                id: 'card3_q50_answer',
+                xtype: 'checkboxgroup',
+                name: 'card3_q50',
+                columns: 1,
+                items: [{
+                    boxLabel: '把耙耙用废报纸包好带回家冲掉',
+                    name: 'cb1',
+                    inputValue: '1'
+                  },
+                  {
+                    boxLabel: '受污染的报纸按有害垃圾处理',
+                    name: 'cb2',
+                    inputValue: '2'
+                  },
+                  {
+                    boxLabel: '没受污染的报纸按可回收垃圾处理',
+                    name: 'cb3',
+                    inputValue: '3'
+                  },
+                  {
+                    boxLabel: '受污染的报纸浸水后当湿垃圾处理',
+                    name: 'cb4',
+                    inputValue: '4'
+                  }
+                ]
+              }
+            ],
+            buttons: [{
+              text: 'submit',
+              style: '',
+              handler: function () {
+                console.log(Ext.getCmp('q50').getValue())
+                Ext.Msg.alert('success', 'Congratulations!');
+              }
+
+            }]
+
+          }]
+        }, {
+          region: 'center',
+          split: true,
+          border: true
+        }, {
+          region: 'center',
+          layout: 'accordion',
+          layoutConfig: {
+            // layout-specific configs go here
+            titleCollapse: false,
+            animate: true,
+            activeOnTop: false
+          },
+          items: [{
+            title: 'Panel 1',
+            html: '<p>Panel content!</p>'
+          }, {
+            title: 'Panel 2',
+            html: '<p>Panel content!</p>'
+          }, {
+            title: 'Panel 3',
+            html: '<p>Panel content!</p>'
+          }]
+        }]
+      });
+
+
+
+    })
+  </script>
+</head>
+
+<body>
+  <div id="main-container">
+
+  </div>
+</body>
+
+</html>
